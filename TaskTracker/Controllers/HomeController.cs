@@ -1,6 +1,7 @@
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Text.Json;
-using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using TaskTracker.Models;
 using TaskTracker.Services;
 
@@ -31,7 +32,9 @@ namespace TaskTracker.Controllers
             {
                 Title = taskHomePage.TaskName,
                 Description = taskHomePage.TaskDescription,
-                DueDate = taskHomePage.DueDate
+                DueDate = taskHomePage.DueDate,
+                IsActive = true,
+                Id = taskHomePage.Tasks.Count
             };
             if (string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyTasks)))
             {
@@ -47,7 +50,17 @@ namespace TaskTracker.Controllers
             
             return View("Index", taskHomePage);
         }
-
+        public IActionResult DeleteTask(TaskHomePageModel taskHomePage)
+        {
+            if (!string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyTasks)))
+            {
+                taskHomePage.Tasks = JsonSerializer.Deserialize<List<TaskModel>>(HttpContext.Session.GetString(SessionKeyTasks));
+                taskHomePage.Tasks = _taskService.DeleteTask(taskHomePage.Id, taskHomePage.Tasks);
+                HttpContext.Session.SetString(SessionKeyTasks, JsonSerializer.Serialize(taskHomePage.Tasks));
+                return View("Index", taskHomePage);
+            }
+            return View("Index", taskHomePage);
+        }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

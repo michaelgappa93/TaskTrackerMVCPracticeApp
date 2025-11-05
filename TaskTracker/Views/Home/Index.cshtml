@@ -3,11 +3,6 @@
 }
 @model TaskHomePageModel;
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
-
 <form asp-action="AddTask" asp-controller="Home" method="post">
 
     <label asp-for="@Model.TaskName">Title</label>
@@ -17,22 +12,29 @@
     <input asp-for="@Model.TaskDescription" type="text" class="form-control" />
     
     <label asp-for="@Model.DueDate">Due Date</label>
-    <input asp-for="@Model.DueDate" type="date" class="form-control" />
+    <input asp-for="@Model.DueDate" type="date" class="form-control" value="01/01/2025"/>
     
     <button class="btn btn-primary">
         Submit
     </button>
 </form>
 <div class="container">
-    <div class="col">
+    <div class="col-6">
         @foreach (var task in @Model.Tasks)
         {
             <div class="row">
+                <form asp-action="DeleteTask" asp-controller="Home" method="post">
+                    <input hidden asp-for="@task.Id" class="form-control" />
+                    <button>&#10006;</button>
+                </form>
                 <h3>
                     @task.Title
                 </h3>
                 <p>
                     @task.Description
+                </p>
+                <p>
+                    @task.DueDate
                 </p>
             </div>
         }
