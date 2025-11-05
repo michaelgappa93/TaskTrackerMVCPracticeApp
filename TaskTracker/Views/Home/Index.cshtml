@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@model TaskHomePageModel;
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<form asp-action="AddTask" asp-controller="Home" method="post">
+
+    <label asp-for="@Model.TaskName">Title</label>
+    <input asp-for="@Model.TaskName" type="text" class="form-control" />
+
+    <label asp-for="@Model.TaskDescription">Description</label>
+    <input asp-for="@Model.TaskDescription" type="text" class="form-control" />
+    
+    <label asp-for="@Model.DueDate">Due Date</label>
+    <input asp-for="@Model.DueDate" type="date" class="form-control" />
+    
+    <button class="btn btn-primary">
+        Submit
+    </button>
+</form>
+<div class="container">
+    <div class="col">
+        @foreach (var task in @Model.Tasks)
+        {
+            <div class="row">
+                <h3>
+                    @task.Title
+                </h3>
+                <p>
+                    @task.Description
+                </p>
+            </div>
+        }
+    </div>
+</div>
