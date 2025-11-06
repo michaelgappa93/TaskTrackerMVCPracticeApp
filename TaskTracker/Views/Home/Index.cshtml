@@ -12,7 +12,7 @@
     <input asp-for="@Model.TaskDescription" type="text" class="form-control" />
     
     <label asp-for="@Model.DueDate">Due Date</label>
-    <input asp-for="@Model.DueDate" type="date" class="form-control" value="01/01/2025"/>
+    <input asp-for="@Model.DueDate" type="date" class="form-control"/>
     
     <button class="btn btn-primary">
         Submit
@@ -20,23 +20,32 @@
 </form>
 <div class="container">
     <div class="col-6">
-        @foreach (var task in @Model.Tasks)
+        @foreach (var task in Model.Tasks)
         {
             <div class="row">
                 <form asp-action="DeleteTask" asp-controller="Home" method="post">
-                    <input hidden asp-for="@task.Id" class="form-control" />
+                    <input type="hidden" name="TaskId" value="@task.Id" />
                     <button>&#10006;</button>
                 </form>
-                <h3>
-                    @task.Title
-                </h3>
-                <p>
-                    @task.Description
-                </p>
-                <p>
-                    @task.DueDate
-                </p>
+
+                <h3>@task.Title</h3>
+                <p>@task.Description</p>
+                <p>@task.DueDate</p>
+
+                @if (task.IsActive)
+                {
+                    <p>Pending</p>
+                    <form asp-action="CompleteTask" asp-controller="Home" method="post">
+                        <input type="hidden" name="TaskId" value="@task.Id" />
+                        <button class="btn-close-white">Complete</button>
+                    </form>
+                }
+                else
+                {
+                    <p>Completed</p>
+                }
             </div>
         }
+
     </div>
 </div>

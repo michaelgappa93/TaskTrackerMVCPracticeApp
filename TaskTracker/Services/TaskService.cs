@@ -10,9 +10,22 @@ namespace TaskTracker.Services
             return tasks;
         }
 
-        internal List<TaskModel>? DeleteTask(int ID, List<TaskModel>? tasks)
+        internal List<TaskModel>? CompleteTask(string ID, List<TaskModel>? tasks)
         {
-            TaskModel task = tasks.Find(t => t.Id == ID);
+            foreach (var task in tasks)
+            {
+                if(task.Id == ID)
+                {
+                    task.IsActive = false;
+                    break;
+                }
+            }
+            return tasks;
+        }
+
+        internal List<TaskModel>? DeleteTask(string ID, List<TaskModel>? tasks)
+        {
+            TaskModel task = tasks.Find(t => t.Id == ID.ToString());
             tasks.Remove(task);
             return tasks;
         }
