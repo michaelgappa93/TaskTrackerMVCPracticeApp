@@ -36,7 +36,7 @@ namespace TaskTracker.Controllers
                     Description = taskHomePage.TaskDescription,
                     DueDate = taskHomePage.DueDate,
                     IsActive = true,
-                    Id = "0"
+                    Id = 0
                 };
                 taskHomePage.Tasks = _taskService.CreateAndAddTask(task, taskHomePage.Tasks);
                 HttpContext.Session.SetString(SessionKeyTasks, JsonSerializer.Serialize(taskHomePage.Tasks));
@@ -51,7 +51,7 @@ namespace TaskTracker.Controllers
                     Description = taskHomePage.TaskDescription,
                     DueDate = taskHomePage.DueDate,
                     IsActive = true,
-                    Id = taskHomePage.Tasks.Count.ToString()
+                    Id = taskHomePage.Tasks.Count
                 };
                 taskHomePage.Tasks = _taskService.CreateAndAddTask(task, taskHomePage.Tasks);
                 HttpContext.Session.SetString(SessionKeyTasks, JsonSerializer.Serialize(taskHomePage.Tasks));
@@ -66,7 +66,7 @@ namespace TaskTracker.Controllers
             if (!string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyTasks)))
             {
                 taskHomePage.Tasks = JsonSerializer.Deserialize<List<TaskModel>>(HttpContext.Session.GetString(SessionKeyTasks));
-                taskHomePage.Tasks = _taskService.DeleteTask(taskHomePage.TaskId.ToString(), taskHomePage.Tasks);
+                taskHomePage.Tasks = _taskService.DeleteTask(taskHomePage.TaskId, taskHomePage.Tasks);
                 HttpContext.Session.SetString(SessionKeyTasks, JsonSerializer.Serialize(taskHomePage.Tasks));
                 return View("Index", taskHomePage);
             }
@@ -90,6 +90,28 @@ namespace TaskTracker.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [HttpPost]
+        public IActionResult Sort(TaskHomePageModel taskHomePage)
+        {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyTasks)))
+            {
+                return View("Index", taskHomePage);
+            }
+            
+            taskHomePage.Tasks = JsonSerializer.Deserialize<List<TaskModel>>(HttpContext.Session.GetString(SessionKeyTasks));
+            if (taskHomePage.sortByAscending != "True")
+            {
+                taskHomePage.Tasks = _taskService.SortTasks(taskHomePage.Tasks, taskHomePage.sortByAscending);
+                taskHomePage.sortByAscending = "True";
+            }
+            else
+            {
+                taskHomePage.Tasks = _taskService.SortTasks(taskHomePage.Tasks, taskHomePage.sortByAscending);
+                taskHomePage.sortByAscending = "False";
+            }
+            return View("Index", taskHomePage);
         }
     }
 }

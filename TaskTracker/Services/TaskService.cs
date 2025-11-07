@@ -1,4 +1,6 @@
-﻿using TaskTracker.Models;
+﻿using Microsoft.VisualBasic;
+using System.Threading.Tasks;
+using TaskTracker.Models;
 
 namespace TaskTracker.Services
 {
@@ -10,7 +12,7 @@ namespace TaskTracker.Services
             return tasks;
         }
 
-        internal List<TaskModel>? CompleteTask(string ID, List<TaskModel>? tasks)
+        internal List<TaskModel>? CompleteTask(int ID, List<TaskModel>? tasks)
         {
             foreach (var task in tasks)
             {
@@ -23,11 +25,29 @@ namespace TaskTracker.Services
             return tasks;
         }
 
-        internal List<TaskModel>? DeleteTask(string ID, List<TaskModel>? tasks)
+        internal List<TaskModel>? DeleteTask(int ID, List<TaskModel>? tasks)
         {
-            TaskModel task = tasks.Find(t => t.Id == ID.ToString());
+            TaskModel task = tasks.Find(t => t.Id == ID);
             tasks.Remove(task);
             return tasks;
+        }
+
+        internal List<TaskModel> SortTasks(List<TaskModel> tasks, string sortDirection)
+        {
+            if (sortDirection == "True")
+            {
+                tasks = tasks.OrderBy(t => t.DueDate).ToList();
+                return tasks;
+            }
+            else
+            {
+                tasks = tasks.OrderByDescending(t => t.DueDate).ToList();
+                return tasks;
+            }
+                
+            
+            
+            
         }
     }
 }

@@ -9,10 +9,9 @@
     <input asp-for="@Model.TaskName" type="text" class="form-control" />
 
     <label asp-for="@Model.TaskDescription">Description</label>
-    <input asp-for="@Model.TaskDescription" type="text" class="form-control" />
-    
+    <textarea asp-for="@Model.TaskDescription" rows="3" class="form-control" /> </textarea>
     <label asp-for="@Model.DueDate">Due Date</label>
-    <input asp-for="@Model.DueDate" type="date" class="form-control"/>
+    <input asp-for="@Model.DueDate" type="date" class="form-control" value="01/01/2025"/>
     
     <button class="btn btn-primary">
         Submit
@@ -20,31 +19,76 @@
 </form>
 <div class="container">
     <div class="col-6">
+        <form asp-action="Sort" asp-controller="Home">
+            @if (Model.sortByAscending == "True")
+                {
+                <input type="checkbox" checked hidden asp-for="@Model.sortByAscending" value="@Model.sortByAscending" />
+                <button class="btn btn-secondary">Sort</button>
+            }
+            else
+            {
+                <input type="checkbox" hidden asp-for="@Model.sortByAscending" value="@Model.sortByAscending" />
+                <button class="btn btn-secondary">Sort</button>
+            }
+        </form>
         @foreach (var task in Model.Tasks)
         {
-            <div class="row">
-                <form asp-action="DeleteTask" asp-controller="Home" method="post">
-                    <input type="hidden" name="TaskId" value="@task.Id" />
-                    <button>&#10006;</button>
-                </form>
-
-                <h3>@task.Title</h3>
-                <p>@task.Description</p>
-                <p>@task.DueDate</p>
-
-                @if (task.IsActive)
-                {
-                    <p>Pending</p>
-                    <form asp-action="CompleteTask" asp-controller="Home" method="post">
+            @if (task.DueDate == DateTime.Today)
+            {
+                <div class="row" style="background-color: yellow;">
+                    <form asp-action="DeleteTask" asp-controller="Home" method="post">
                         <input type="hidden" name="TaskId" value="@task.Id" />
-                        <button class="btn-close-white">Complete</button>
+                        <button>&#10006;</button>
                     </form>
-                }
-                else
-                {
-                    <p>Completed</p>
-                }
-            </div>
+
+
+                    <h3>@task.Title</h3>
+                    <p>@task.Description</p>
+                    <p>@task.DueDate.Date.Month/@task.DueDate.Date.Day/@task.DueDate.Date.Year</p>
+
+                    @if (task.IsActive)
+                    {
+                        <p>Pending</p>
+                        <form asp-action="CompleteTask" asp-controller="Home" method="post">
+                            <input type="hidden" name="TaskId" value="@task.Id" />
+                            <button class="btn-close-white">Complete</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <p>Completed</p>
+                    }
+                </div>
+                
+            }
+            else
+            {
+                <div class="row">
+                    <form asp-action="DeleteTask" asp-controller="Home" method="post">
+                        <input type="hidden" name="TaskId" value="@task.Id" />
+                        <button>&#10006;</button>
+                    </form>
+                    <h3>@task.Title</h3>
+                    <p>@task.Description</p>
+                    <p>@task.DueDate.Date.Month/@task.DueDate.Date.Day/@task.DueDate.Date.Year</p>
+
+                    @if (task.IsActive)
+                    {
+                        <p>Pending</p>
+                        <form asp-action="CompleteTask" asp-controller="Home" method="post">
+                            <input type="hidden" name="TaskId" value="@task.Id" />
+                            <button class="btn-close-white">Complete</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <p>Completed</p>
+                    }
+                </div>
+                
+            }
+            
+
         }
 
     </div>

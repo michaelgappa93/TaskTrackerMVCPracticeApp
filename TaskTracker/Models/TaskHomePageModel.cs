@@ -6,6 +6,7 @@
         public string TaskName { get; set; }
         public string TaskDescription { get; set; }
         public DateTime DueDate { get; set; }
-        public string TaskId { get; set; }
+        public int TaskId { get; set; }
+        public string sortByAscending { get; set; }
     }
 }
