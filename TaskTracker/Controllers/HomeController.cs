@@ -21,6 +21,11 @@ namespace TaskTracker.Controllers
 
         public IActionResult Index(TaskHomePageModel taskHomePage)
         {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyTasks)))
+            {
+                return View(taskHomePage);
+            }
+            taskHomePage.Tasks = JsonSerializer.Deserialize<List<TaskModel>>(HttpContext.Session.GetString(SessionKeyTasks)); 
             return View(taskHomePage);
         }
 
@@ -35,7 +40,7 @@ namespace TaskTracker.Controllers
                     Title = taskHomePage.TaskName,
                     Description = taskHomePage.TaskDescription,
                     DueDate = taskHomePage.DueDate,
-                    IsActive = true,
+                    Status = StatusType.Unassigned,
                     Id = 0
                 };
                 taskHomePage.Tasks = _taskService.CreateAndAddTask(task, taskHomePage.Tasks);
@@ -50,7 +55,7 @@ namespace TaskTracker.Controllers
                     Title = taskHomePage.TaskName,
                     Description = taskHomePage.TaskDescription,
                     DueDate = taskHomePage.DueDate,
-                    IsActive = true,
+                    Status = StatusType.Unassigned,
                     Id = taskHomePage.Tasks.Count
                 };
                 taskHomePage.Tasks = _taskService.CreateAndAddTask(task, taskHomePage.Tasks);
@@ -86,12 +91,6 @@ namespace TaskTracker.Controllers
             return View("Index", taskHomePage);
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
         [HttpPost]
         public IActionResult Sort(TaskHomePageModel taskHomePage)
         {
@@ -112,6 +111,12 @@ namespace TaskTracker.Controllers
                 taskHomePage.sortByAscending = "False";
             }
             return View("Index", taskHomePage);
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

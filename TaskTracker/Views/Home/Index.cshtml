@@ -6,90 +6,148 @@
 <form asp-action="AddTask" asp-controller="Home" method="post">
 
     <label asp-for="@Model.TaskName">Title</label>
-    <input asp-for="@Model.TaskName" type="text" class="form-control" />
+    <input asp-for="@Model.TaskName" required type="text" class="form-control" />
 
     <label asp-for="@Model.TaskDescription">Description</label>
-    <textarea asp-for="@Model.TaskDescription" rows="3" class="form-control" /> </textarea>
-    <label asp-for="@Model.DueDate">Due Date</label>
-    <input asp-for="@Model.DueDate" type="date" class="form-control" value="01/01/2025"/>
+    <textarea required asp-for="@Model.TaskDescription" rows="3" class="form-control" /></textarea>
     
+    <label asp-for="@Model.DueDate" required>Due Date</label>
+    <input required asp-for="@Model.DueDate" type="date" class="form-control" value=""/>
+    <br />
     <button class="btn btn-primary">
         Submit
     </button>
+    
 </form>
-<div class="container">
-    <div class="col-6">
-        <form asp-action="Sort" asp-controller="Home">
-            @if (Model.sortByAscending == "True")
-                {
-                <input type="checkbox" checked hidden asp-for="@Model.sortByAscending" value="@Model.sortByAscending" />
-                <button class="btn btn-secondary">Sort</button>
-            }
-            else
-            {
-                <input type="checkbox" hidden asp-for="@Model.sortByAscending" value="@Model.sortByAscending" />
-                <button class="btn btn-secondary">Sort</button>
-            }
-        </form>
-        @foreach (var task in Model.Tasks)
+@if (Model.Tasks.Count > 0)
+{
+    <form asp-action="Sort" asp-controller="Home" method="post" style="float:right;">
+        @if (Model.sortByAscending == "True")
         {
-            @if (task.DueDate == DateTime.Today)
-            {
-                <div class="row" style="background-color: yellow;">
-                    <form asp-action="DeleteTask" asp-controller="Home" method="post">
-                        <input type="hidden" name="TaskId" value="@task.Id" />
-                        <button>&#10006;</button>
-                    </form>
-
-
-                    <h3>@task.Title</h3>
-                    <p>@task.Description</p>
-                    <p>@task.DueDate.Date.Month/@task.DueDate.Date.Day/@task.DueDate.Date.Year</p>
-
-                    @if (task.IsActive)
-                    {
-                        <p>Pending</p>
-                        <form asp-action="CompleteTask" asp-controller="Home" method="post">
-                            <input type="hidden" name="TaskId" value="@task.Id" />
-                            <button class="btn-close-white">Complete</button>
-                        </form>
-                    }
-                    else
-                    {
-                        <p>Completed</p>
-                    }
-                </div>
-                
-            }
-            else
-            {
-                <div class="row">
-                    <form asp-action="DeleteTask" asp-controller="Home" method="post">
-                        <input type="hidden" name="TaskId" value="@task.Id" />
-                        <button>&#10006;</button>
-                    </form>
-                    <h3>@task.Title</h3>
-                    <p>@task.Description</p>
-                    <p>@task.DueDate.Date.Month/@task.DueDate.Date.Day/@task.DueDate.Date.Year</p>
-
-                    @if (task.IsActive)
-                    {
-                        <p>Pending</p>
-                        <form asp-action="CompleteTask" asp-controller="Home" method="post">
-                            <input type="hidden" name="TaskId" value="@task.Id" />
-                            <button class="btn-close-white">Complete</button>
-                        </form>
-                    }
-                    else
-                    {
-                        <p>Completed</p>
-                    }
-                </div>
-                
-            }
-            
-
+            <input type="checkbox" asp-for="@Model.sortByAscending" checked hidden value="@Model.sortByAscending" />
+            <button class="btn btn-secondary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sort-up" viewBox="0 0 16 16">
+                    <path d="M3.5 12.5a.5.5 0 0 1-1 0V3.707L1.354 4.854a.5.5 0 1 1-.708-.708l2-1.999.007-.007a.5.5 0 0 1 .7.006l2 2a.5.5 0 1 1-.707.708L3.5 3.707zm3.5-9a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5M7.5 6a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1z" />
+                </svg>
+            </button>
         }
+        else
+        {
+            <input type="checkbox" asp-for="@Model.sortByAscending" hidden value="@Model.sortByAscending" />
+            <button class="btn btn-secondary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sort-down-alt" viewBox="0 0 16 16">
+                    <path d="M3.5 3.5a.5.5 0 0 0-1 0v8.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L3.5 12.293zm4 .5a.5.5 0 0 1 0-1h1a.5.5 0 0 1 0 1zm0 3a.5.5 0 0 1 0-1h3a.5.5 0 0 1 0 1zm0 3a.5.5 0 0 1 0-1h5a.5.5 0 0 1 0 1zM7 12.5a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 0-1h-7a.5.5 0 0 0-.5.5" />
+                </svg>
+            </button>
+        }
+    </form>
+}
+<div class="container">
+    <div class="col-12">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Due Date</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
 
+            <tbody>
+
+            @foreach (var task in Model.Tasks)
+            {
+
+                @if (task.DueDate == DateTime.Today && task.Status != StatusType.Unassigned)
+                {
+                    <tr class="table-warning">
+                        <th scope="row">@task.Id</th>
+                            <td><h3>@task.Title</h3></td>
+                            <td><p>@task.Description</p></td>
+                            <td><p>@task.DueDate.Date.Month/@task.DueDate.Date.Day/@task.DueDate.Date.Year</p></td>
+                            <td>
+                                @if (task.Status == StatusType.Completed)
+                                {
+                                    <form asp-action="CompleteTask" asp-controller="Home" method="post">
+                                        <input type="hidden" name="TaskId" value="@task.Id" />
+                                        <button class="btn btn-primary">Pending</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-success" disabled>Completed</button>
+                                }
+                            </td>
+                            <td>
+                                <form style="float:right;" asp-action="DeleteTask" asp-controller="Home" method="post">
+                                    <input type="hidden" name="TaskId" value="@task.Id" />
+                                    <button class="btn btn-sm btn-outline-secondary">&#10006;</button>
+                                </form>
+                            </td>
+                    </tr>
+
+                }
+                    else if (task.DueDate < DateTime.Today && task.Status != StatusType.Unassigned)
+                {
+                        <tr class="table-danger">
+                            <th scope="row">@task.Id</th>
+                            <td><h3>@task.Title</h3></td>
+                            <td><p>@task.Description</p></td>
+                            <td><p>@task.DueDate.Date.Month/@task.DueDate.Date.Day/@task.DueDate.Date.Year</p></td>
+                            <td>
+                                @if (task.Status == StatusType.Unassigned)
+                                {
+                                    <form asp-action="CompleteTask" asp-controller="Home" method="post">
+                                        <input type="hidden" name="TaskId" value="@task.Id" />
+                                        <button class="btn btn-primary">Pending</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-success" disabled>Completed</button>
+                                }
+                            </td>
+                            <td>
+                                <form style="float:right;" asp-action="DeleteTask" asp-controller="Home" method="post">
+                                    <input type="hidden" name="TaskId" value="@task.Id" />
+                                    <button class="btn btn-sm btn-outline-secondary">&#10006;</button>
+                                </form>
+                            </td>
+                        </tr>
+                }
+                else
+                {
+                    <tr>
+                        <th scope="row">@task.Id</th>
+                        <td><h3>@task.Title</h3></td>
+                        <td><p>@task.Description</p></td>
+                        <td><p>@task.DueDate.Date.Month/@task.DueDate.Date.Day/@task.DueDate.Date.Year</p></td>
+                        <td>
+                            @if (task.Status == StatusType.Unassigned)
+                            {
+                                <form asp-action="CompleteTask" asp-controller="Home" method="post">
+                                    <input type="hidden" name="TaskId" value="@task.Id" />
+                                    <button class="btn btn-primary">Pending</button>
+                                </form>
+                            }
+                            else
+                            {
+                                    <button class="btn btn-small btn-success" disabled>Completed</button>
+                            }
+                        </td>
+                        <td>
+                            <form style="float:right;" asp-action="DeleteTask" asp-controller="Home" method="post">
+                                <input type="hidden" name="TaskId" value="@task.Id" />
+                                    <button class="btn btn-sm btn-outline-secondary" style="float:right;">&#10006;</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+            </tbody>
+        </table>
+        
     </div>
 </div>

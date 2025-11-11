@@ -18,7 +18,7 @@ namespace TaskTracker.Services
             {
                 if(task.Id == ID)
                 {
-                    task.IsActive = false;
+                    task.Status = StatusType.Completed;
                     break;
                 }
             }
