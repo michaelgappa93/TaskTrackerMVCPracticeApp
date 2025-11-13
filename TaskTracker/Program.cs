@@ -1,3 +1,7 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using TaskTracker.Areas.Identity.Data;
+using TaskTracker.Data;
 using TaskTracker.Services;
 
 namespace TaskTracker
@@ -7,6 +11,11 @@ namespace TaskTracker
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var connectionString = builder.Configuration.GetConnectionString("TaskTrackerContextConnection") ?? throw new InvalidOperationException("Connection string 'TaskTrackerContextConnection' not found.");
+
+            builder.Services.AddDbContext<TaskTrackerContext>(options => options.UseSqlServer(connectionString));
+
+            builder.Services.AddDefaultIdentity<TaskTrackerUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<TaskTrackerContext>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -39,7 +48,7 @@ namespace TaskTracker
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
-
+            app.MapRazorPages();
             app.Run();
         }
     }
