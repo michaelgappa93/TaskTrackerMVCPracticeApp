@@ -60,7 +60,7 @@
             @foreach (var task in Model.Tasks)
             {
 
-                @if (task.DueDate == DateTime.Today && task.Status != StatusType.Unassigned)
+                @if (task.DueDate == DateTime.Today && task.Status == StatusType.Unassigned)
                 {
                     <tr class="table-warning">
                         <th scope="row">@task.Id</th>
@@ -68,7 +68,7 @@
                             <td><p>@task.Description</p></td>
                             <td><p>@task.DueDate.Date.Month/@task.DueDate.Date.Day/@task.DueDate.Date.Year</p></td>
                             <td>
-                                @if (task.Status == StatusType.Completed)
+                                @if (task.Status != StatusType.Completed)
                                 {
                                     <form asp-action="CompleteTask" asp-controller="Home" method="post">
                                         <input type="hidden" name="TaskId" value="@task.Id" />
@@ -89,7 +89,7 @@
                     </tr>
 
                 }
-                    else if (task.DueDate < DateTime.Today && task.Status != StatusType.Unassigned)
+                    else if (task.DueDate < DateTime.Today && task.Status == StatusType.Unassigned)
                 {
                         <tr class="table-danger">
                             <th scope="row">@task.Id</th>
@@ -97,7 +97,7 @@
                             <td><p>@task.Description</p></td>
                             <td><p>@task.DueDate.Date.Month/@task.DueDate.Date.Day/@task.DueDate.Date.Year</p></td>
                             <td>
-                                @if (task.Status == StatusType.Unassigned)
+                                @if (task.Status != StatusType.Completed)
                                 {
                                     <form asp-action="CompleteTask" asp-controller="Home" method="post">
                                         <input type="hidden" name="TaskId" value="@task.Id" />
@@ -125,7 +125,7 @@
                         <td><p>@task.Description</p></td>
                         <td><p>@task.DueDate.Date.Month/@task.DueDate.Date.Day/@task.DueDate.Date.Year</p></td>
                         <td>
-                            @if (task.Status == StatusType.Unassigned)
+                            @if (task.Status != StatusType.Completed)
                             {
                                 <form asp-action="CompleteTask" asp-controller="Home" method="post">
                                     <input type="hidden" name="TaskId" value="@task.Id" />
@@ -134,7 +134,7 @@
                             }
                             else
                             {
-                                    <button class="btn btn-small btn-success" disabled>Completed</button>
+                                    <button class="btn btn-small btn-success" disabled>@task.Status</button>
                             }
                         </td>
                         <td>
